@@ -35,6 +35,12 @@ const FAQSection = () => {
       question: "¿Con qué frecuencia se actualiza la información?",
       answer: "La información se actualiza en tiempo real a medida que la API de SpaceX proporciona nuevos datos."
     },
+    {
+      question: "¿Por qué las misiones futuras y los ultimos lanzamientos no muestran fechas más allá de 2022?",
+      answer: "Esto se debe a que la API pública de SpaceX actualmente no está actualizada con los lanzamientos más recientes. Una vez que la API se actualice, la aplicación reflejará las nuevas fechas automáticamente."
+    }
+
+
   ];
 
   return (

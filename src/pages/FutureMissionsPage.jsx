@@ -3,10 +3,10 @@ import NavigationBar from '../components/common/NavigationBar';
 import Footer from '../components/common/Footer';
 import NewsletterSection from '../components/common/NewsletterSection';
 import FAQSection from '../components/home/FAQSection';
-import LaunchCard from '../components/launches/LaunchCard'; // Reutilizar LaunchCard
+import LaunchCard from '../components/launches/LaunchCard'; 
 import Loader from '../components/common/Loader';
 import ErrorMessage from '../components/common/ErrorMessage';
-import { Link } from 'react-router-dom'; // Para el CTA
+import { Link } from 'react-router-dom'; 
 
 const FutureMissionsPage = () => {
   const [futureMissions, setFutureMissions] = useState([]);
@@ -18,13 +18,11 @@ const FutureMissionsPage = () => {
       try {
         setLoading(true);
         setError(null);
-        // Endpoint para misiones futuras
         const response = await fetch('https://api.spacexdata.com/v4/launches/upcoming');
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
         const data = await response.json();
-        // Opcional: ordenar por fecha ascendente para las próximas misiones
         const sortedData = data.sort((a, b) => new Date(a.date_utc) - new Date(b.date_utc));
         setFutureMissions(sortedData);
       } catch (err) {
@@ -42,7 +40,6 @@ const FutureMissionsPage = () => {
     <div className="bg-gray-900 text-white min-h-screen font-sans pt-16">
       <NavigationBar />
 
-      {/* Sección de Encabezado */}
       <header className="py-20 text-center bg-gray-950">
         <div className="container mx-auto px-4">
           <h1 className="text-5xl font-extrabold text-green-400">Próximas Misiones de SpaceX</h1>
@@ -50,7 +47,6 @@ const FutureMissionsPage = () => {
         </div>
       </header>
 
-      {/* Sección de Lista de Misiones Futuras */}
       <section className="py-20 bg-black">
         <div className="container mx-auto px-4 text-center">
           <h2 className="text-4xl font-bold mb-10 text-green-300">Explora lo que Viene</h2>
@@ -62,14 +58,13 @@ const FutureMissionsPage = () => {
           {!loading && !error && futureMissions.length > 0 && (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8 mt-12">
               {futureMissions.map((mission) => (
-                <LaunchCard key={mission.id} launch={mission} /> // Reutilizamos LaunchCard
+                <LaunchCard key={mission.id} launch={mission} /> 
               ))}
             </div>
           )}
         </div>
       </section>
 
-      {/* Sección de Beneficios (mantener o ajustar contenido) */}
       <section className="py-20 bg-gray-950 text-white">
         <div className="container mx-auto px-4 text-center">
           <h2 className="text-4xl font-bold mb-12">Beneficios de Seguir las Misiones Futuras</h2>
@@ -86,13 +81,12 @@ const FutureMissionsPage = () => {
         </div>
       </section>
 
-      {/* Sección de CTA */}
       <section className="py-20 bg-green-700 text-white text-center">
         <div className="container mx-auto px-4">
           <h2 className="text-4xl font-bold mb-6">¿Preparado para el Mañana?</h2>
           <p className="text-xl mb-8">No te pierdas los próximos hitos en la conquista del espacio.</p>
           <Link
-            to="/latest-launches" // Un CTA para volver a los últimos lanzamientos
+            to="/latest-launches" 
             className="bg-white text-green-700 font-bold py-4 px-8 rounded-full text-lg shadow-lg hover:bg-gray-200 transition duration-300 transform hover:scale-105 inline-block"
           >
             Ver Últimos Lanzamientos

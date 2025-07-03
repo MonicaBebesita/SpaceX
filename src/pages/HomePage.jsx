@@ -13,7 +13,6 @@ const HomePage = () => {
   return (
     <div className="bg-gray-900 text-white min-h-screen font-sans w-full">
       <NavigationBar />
-      {/* La sección principal destacada se fusiona con el HeroSection para una estética más moderna */}
       <HeroSection /> 
       <FeaturesSection />
       <BenefitsSection />

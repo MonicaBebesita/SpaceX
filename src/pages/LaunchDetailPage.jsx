@@ -1,4 +1,3 @@
-// src/pages/LaunchDetailPage.jsx
 import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import NavigationBar from '../components/common/NavigationBar';
@@ -105,14 +104,12 @@ const LaunchDetailPage = () => {
     timeZoneName: 'short',
   });
 
-  // ¡Cambio clave aquí! Usar defaultShipImage como el último fallback
   const featuredImage = launch.links.flickr.original.length > 0
     ? launch.links.flickr.original[0]
     : launch.links.flickr.small.length > 0
       ? launch.links.flickr.small[0]
-      : defaultShipImage; // <-- ¡Aquí se usa la imagen local!
+      : defaultShipImage; 
 
-  // Corregido el patrón de la URL de embed de YouTube
   const youtubeEmbedUrl = launch.links.webcast
     ? `https://www.youtube.com/embed/${launch.links.webcast.split('v=')[1] || launch.links.webcast.split('/').pop().split('?')[0]}`
     : null;

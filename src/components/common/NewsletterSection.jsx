@@ -1,16 +1,15 @@
 import { useState } from "react";
-import emailjs from '@emailjs/browser'; // Importa EmailJS
+import emailjs from '@emailjs/browser'; 
 
 const NewsletterSection = () => {
   const [submitted, setSubmitted] = useState(false);
-  const [error, setError] = useState(false); // Para manejar errores
+  const [error, setError] = useState(false); 
 
   const handleSubmit = (e) => {
     e.preventDefault();
     const form = e.target;
-    const userEmail = form.email.value; // Obtén el valor del email
+    const userEmail = form.email.value; 
 
-    // Tus IDs de EmailJS (reemplaza con los tuyos)
     const serviceId = 'service_dwpbzfj';   
     const templateId = 'template_4bzgtqt';  
     const publicKey = 'NKA20lMOHcyc85EBr';   
@@ -23,8 +22,8 @@ const NewsletterSection = () => {
       .then((response) => {
         console.log('Correo enviado exitosamente!', response.status, response.text);
         setSubmitted(true);
-        setError(false); // Reinicia el estado de error
-        form.reset(); // Limpia el formulario
+        setError(false); 
+        form.reset(); 
       })
 .catch((err) => {
   console.error('Fallo al enviar el correo:', err);
@@ -41,7 +40,7 @@ const NewsletterSection = () => {
   };
 
   return (
-    <section className="py-20 bg-gray-900 text-white text-center">
+    <section className="py-20 bg-gray-900 text-white text-center transition-all duration-300 ease-in-out hover:scale-105 hover:shadow-[0_10px_30px_rgba(0,0,0,0.6)] hover:-translate-y-1 hover:brightness-110 relative z-0">
       <div className="container mx-auto px-4">
         <h2 className="text-4xl font-bold mb-6">Suscríbete a Nuestro Boletín</h2>
         <p className="text-xl mb-8">
@@ -56,7 +55,7 @@ const NewsletterSection = () => {
           <form onSubmit={handleSubmit} className="max-w-md mx-auto flex flex-col sm:flex-row gap-4">
             <input
               type="email"
-              name="email" // Asegúrate de que el name sea 'email' para accederlo fácilmente
+              name="email" 
               placeholder="Tu correo electrónico"
               required
               className="flex-grow p-4 rounded-lg bg-gray-700 border border-gray-600 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -70,7 +69,7 @@ const NewsletterSection = () => {
           </form>
         )}
 
-        {error && ( // Muestra el mensaje de error si hay un problema
+        {error && ( 
           <div className="bg-red-600 text-white p-4 rounded-lg font-medium mt-4 transition">
             Hubo un error al suscribirte. Por favor, inténtalo de nuevo.
           </div>

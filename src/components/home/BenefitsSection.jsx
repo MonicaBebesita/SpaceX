@@ -1,6 +1,6 @@
 const BenefitsSection = () => {
   return (
-    <section className="py-20 bg-black text-white">
+    <section className="py-20 bg-black text-white ">
       <div className="container mx-auto px-4 text-center">
         <h2 className="text-4xl font-bold mb-12">Beneficios de Usar Nuestra App</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-10">

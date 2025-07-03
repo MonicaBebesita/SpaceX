@@ -8,7 +8,7 @@ const Footer = () => {
           <a href="#" className="text-gray-400 hover:text-blue-400 transition duration-300">Términos</a>
           <a href="#" className="text-gray-400 hover:text-blue-400 transition duration-300">Contacto</a>
         </div>
-        <p className="text-sm text-gray-500">Hecho con ❤️ para los entusiastas del espacio.</p>
+        <p className="text-sm text-gray-500">Hecho para los entusiastas del espacio.</p>
       </div>
     </footer>
   );

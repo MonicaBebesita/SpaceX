@@ -2,13 +2,10 @@ import React, { useEffect, useState, useRef } from 'react';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Autoplay, Navigation } from 'swiper/modules';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
-
-// Importa los estilos de Swiper
 import 'swiper/css';
 import 'swiper/css/navigation';
 import 'swiper/css/autoplay';
 
-// Componente Loader simple para mostrar mientras se cargan los datos
 const Loader = () => (
   <div className="flex justify-center items-center py-10">
     <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500"></div>
@@ -16,7 +13,6 @@ const Loader = () => (
   </div>
 );
 
-// Componente ErrorMessage simple para mostrar errores
 const ErrorMessage = ({ message }) => (
   <div className="text-center py-10 text-red-500 text-lg">
     <p>{message}</p>
@@ -27,7 +23,7 @@ const CrewCarousel = () => {
   const [crewMembers, setCrewMembers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const swiperRef = useRef(null); // Referencia para controlar la instancia de Swiper
+  const swiperRef = useRef(null); 
 
   useEffect(() => {
     const fetchCrewData = async () => {
@@ -39,7 +35,7 @@ const CrewCarousel = () => {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
         const data = await response.json();
-        // Filtra tripulantes que no tienen imagen o misiones para asegurar una buena visualización
+
         const filteredCrew = data.filter(member => member.image && member.launches && member.launches.length > 0);
         setCrewMembers(filteredCrew);
       } catch (err) {
@@ -76,15 +72,14 @@ const CrewCarousel = () => {
             onSwiper={(swiper) => (swiperRef.current = swiper)}
             modules={[Autoplay, Navigation]}
             loop={true}
-            spaceBetween={30} // Espacio entre slides
-            centeredSlides={true} // Centra las diapositivas
+            spaceBetween={30} 
+            centeredSlides={true} 
             autoplay={{
               delay: 4000,
-              disableOnInteraction: false, // No deshabilitar autoplay al interactuar
+              disableOnInteraction: false, 
             }}
-            // Configuración de responsividad (breakpoints)
             breakpoints={{
-              0: { // Para pantallas muy pequeñas (móviles)
+              0: { // Para pantallas muy pequeñas 
                 slidesPerView: 1,
                 spaceBetween: 15,
               },
@@ -92,14 +87,14 @@ const CrewCarousel = () => {
                 slidesPerView: 2,
                 spaceBetween: 25,
               },
-              1024: { // Para pantallas grandes (desktops)
+              1024: { // Para pantallas grandes 
                 slidesPerView: 3,
                 spaceBetween: 30,
               },
             }}
             navigation={{
-              nextEl: '.crew-swiper-button-next', // Clases únicas para evitar conflictos
-              prevEl: '.crew-swiper-button-prev', // con otros Swipers en la misma página
+              nextEl: '.crew-swiper-button-next', 
+              prevEl: '.crew-swiper-button-prev', 
             }}
             className="mySwiper overflow-hidden rounded-xl shadow-2xl"
             onMouseEnter={() => swiperRef.current?.autoplay.stop()}
@@ -140,7 +135,6 @@ const CrewCarousel = () => {
             ))}
           </Swiper>
 
-          {/* Botones de navegación personalizados para la tripulación */}
           <button
             className="crew-swiper-button-prev absolute left-0 top-1/2 -translate-x-1/2 transform -translate-y-1/2 bg-gray-700 bg-opacity-70 hover:bg-opacity-90 p-4 rounded-full shadow-lg transition duration-300 z-20 focus:outline-none focus:ring-2 focus:ring-blue-500"
             aria-label="Previous crew member"

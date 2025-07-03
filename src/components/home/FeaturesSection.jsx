@@ -1,6 +1,6 @@
 const FeaturesSection = () => {
   return (
-    <section className="py-20 bg-gray-950 text-white">
+    <section className="py-20 bg-gray-950 text-white transition-all duration-300 ease-in-out hover:scale-105 hover:shadow-[0_10px_30px_rgba(0,0,0,0.6)] hover:-translate-y-1 hover:brightness-110 relative z-0">
       <div className="container mx-auto px-4 text-center">
         <h2 className="text-4xl font-bold mb-12">Características Clave</h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-10">

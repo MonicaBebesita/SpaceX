@@ -5,17 +5,14 @@ import FAQSection from '../components/home/FAQSection';
 import LaunchCard from '../components/launches/LaunchCard';
 import Loader from '../components/common/Loader';
 import ErrorMessage from '../components/common/ErrorMessage';
-// Eliminamos FaSearch ya que no hay input de texto
 import { FaCalendarAlt, FaRocket, FaCheckCircle, FaChevronLeft, FaChevronRight } from 'react-icons/fa';
 
 const SearchFilterPage = () => {
-  // Eliminamos el estado searchTerm
-  // const [searchTerm, setSearchTerm] = useState('');
 
   const [filterYear, setFilterYear] = useState('');
-  const [filterSuccess, setFilterSuccess] = useState(''); // 'success', 'failure', ''
-  const [rocketsList, setRocketsList] = useState([]); // Para el filtro de cohetes (opcionalmente dinámico)
-  const [filterRocket, setFilterRocket] = useState(''); // Para el filtro por cohete
+  const [filterSuccess, setFilterSuccess] = useState(''); 
+  const [rocketsList, setRocketsList] = useState([]); 
+  const [filterRocket, setFilterRocket] = useState(''); 
 
   const [searchResults, setSearchResults] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -24,11 +21,9 @@ const SearchFilterPage = () => {
   const [totalPages, setTotalPages] = useState(1);
   const [totalResults, setTotalResults] = useState(0);
 
-  // Generar la lista de años dinámicamente (ej. de 2006 al año actual + 5)
   const currentYear = new Date().getFullYear();
-  const years = Array.from({ length: currentYear - 2006 + 6 }, (_, i) => 2006 + i); // Desde 2006 hasta el año actual + 5
+  const years = Array.from({ length: currentYear - 2006 + 6 }, (_, i) => 2006 + i); 
 
-  // Función para obtener la lista de cohetes para el filtro
   useEffect(() => {
     const fetchRockets = async () => {
       try {
@@ -45,19 +40,18 @@ const SearchFilterPage = () => {
     fetchRockets();
   }, []);
 
-  // Función principal para buscar y filtrar
   const performSearch = useCallback(async () => {
     setLoading(true);
     setError(null);
-    setSearchResults([]); // Limpiar resultados anteriores
+    setSearchResults([]); 
     setTotalPages(1);
     setTotalResults(0);
 
     const query = {};
     const options = {
       page: page,
-      limit: 12, // Número de resultados por página
-      sort: { date_utc: -1 }, // Ordenar por fecha descendente
+      limit: 12, 
+      sort: { date_utc: -1 }, 
       populate: [
         {
           path: 'rocket',
@@ -66,15 +60,6 @@ const SearchFilterPage = () => {
       ]
     };
 
-    // Eliminamos la lógica de searchTerm
-    /*
-    if (searchTerm) {
-      query.$or = [
-        { name: { $regex: searchTerm, $options: 'i' } },
-        { details: { $regex: searchTerm, $options: 'i' } },
-      ];
-    }
-    */
 
     if (filterYear) {
       const yearStart = new Date(`${filterYear}-01-01T00:00:00Z`).toISOString();
@@ -115,32 +100,23 @@ const SearchFilterPage = () => {
     } finally {
       setLoading(false);
     }
-  }, [filterYear, filterSuccess, filterRocket, page]); // Dependencias actualizadas para useCallback
-
-  // Ejecutar la búsqueda inicial y cada vez que cambian los filtros o la página
-  // La búsqueda ahora se activa automáticamente al cambiar los filtros
+  }, [filterYear, filterSuccess, filterRocket, page]); 
   useEffect(() => {
     performSearch();
   }, [performSearch]);
 
-  // handleSearchClick y handleKeyPress ya no son necesarios si no hay input de texto.
-  // La paginación seguirá llamando a setPage y eso disparará performSearch.
-  // handleClearFilters sigue siendo útil.
 
   const handleClearFilters = () => {
-    // setSearchTerm(''); // Eliminado
     setFilterYear('');
     setFilterSuccess('');
     setFilterRocket('');
     setPage(1);
-    // performSearch se llamará por el useEffect debido a los cambios de estado
   };
 
   return (
     <div className="bg-gray-900 text-white min-h-screen font-sans pt-16">
       <NavigationBar />
 
-      {/* Sección de Encabezado */}
       <header className="py-20 text-center bg-gray-950">
         <div className="container mx-auto px-4">
           <h1 className="text-5xl font-extrabold text-purple-400">Filtrar Lanzamientos</h1>
@@ -148,34 +124,10 @@ const SearchFilterPage = () => {
         </div>
       </header>
 
-      {/* Sección de Filtros */}
       <section className="py-20 bg-black text-white">
         <div className="container mx-auto px-4">
           <h2 className="text-4xl font-bold mb-10 text-center">Filtra tu Búsqueda</h2>
 
-          {/* Eliminamos la barra de búsqueda de texto */}
-          {/*
-          <div className="max-w-3xl mx-auto flex flex-col md:flex-row gap-4 mb-12 items-center">
-            <input
-              type="text"
-              placeholder="Ej. Falcon Heavy, Starlink, 2023..."
-              className="flex-grow p-4 rounded-lg bg-gray-700 border border-gray-600 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500 text-lg"
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              onKeyPress={(e) => {
-                if (e.key === 'Enter') handleSearchClick();
-              }}
-            />
-            <button
-              onClick={handleSearchClick}
-              className="bg-purple-600 hover:bg-purple-700 text-white font-bold py-4 px-8 rounded-lg shadow-md transition duration-300 flex items-center justify-center text-lg w-full md:w-auto"
-            >
-              <FaSearch className="mr-2" /> Buscar
-            </button>
-          </div>
-          */}
-
-          {/* Opciones de Filtros */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto mb-16">
             <div className="bg-gray-800 p-6 rounded-lg shadow-xl border border-gray-700">
               <FaCalendarAlt className="text-5xl text-blue-400 mx-auto mb-4" />
@@ -183,7 +135,7 @@ const SearchFilterPage = () => {
               <select
                 className="mt-4 p-3 rounded bg-gray-700 border border-gray-600 text-white w-full focus:outline-none focus:ring-2 focus:ring-purple-500 text-lg"
                 value={filterYear}
-                onChange={(e) => { setFilterYear(e.target.value); setPage(1); }} // Resetear página al cambiar filtro
+                onChange={(e) => { setFilterYear(e.target.value); setPage(1); }} 
               >
                 <option value="">Todos los Años</option>
                 {years.map((year) => (
@@ -199,7 +151,7 @@ const SearchFilterPage = () => {
               <select
                 className="mt-4 p-3 rounded bg-gray-700 border border-gray-600 text-white w-full focus:outline-none focus:ring-2 focus:ring-purple-500 text-lg"
                 value={filterRocket}
-                onChange={(e) => { setFilterRocket(e.target.value); setPage(1); }} // Resetear página al cambiar filtro
+                onChange={(e) => { setFilterRocket(e.target.value); setPage(1); }} 
               >
                 <option value="">Todos los Cohetes</option>
                 {rocketsList.map((rocket) => (
@@ -215,7 +167,7 @@ const SearchFilterPage = () => {
               <select
                 className="mt-4 p-3 rounded bg-gray-700 border border-gray-600 text-white w-full focus:outline-none focus:ring-2 focus:ring-purple-500 text-lg"
                 value={filterSuccess}
-                onChange={(e) => { setFilterSuccess(e.target.value); setPage(1); }} // Resetear página al cambiar filtro
+                onChange={(e) => { setFilterSuccess(e.target.value); setPage(1); }} 
               >
                 <option value="">Todos los Estados</option>
                 <option value="success">Éxito</option>
@@ -234,10 +186,9 @@ const SearchFilterPage = () => {
         </div>
       </section>
 
-      {/* Sección de Resultados de Búsqueda */}
       <section className="py-20 bg-gray-950 text-white">
         <div className="container mx-auto px-4 text-center">
-          <h2 className="text-4xl font-bold mb-10">Lanzamientos Filtrados</h2> {/* Texto actualizado */}
+          <h2 className="text-4xl font-bold mb-10">Lanzamientos Filtrados</h2> 
           <p className="text-gray-400 mb-8">{totalResults} Lanzamientos Encontrados</p>
 
           {loading && <Loader />}
@@ -298,7 +249,6 @@ const SearchFilterPage = () => {
 
       <FAQSection />
 
-      {/* Sección de CTA (ajustado el texto) */}
       <section className="py-20 bg-purple-700 text-white text-center">
         <div className="container mx-auto px-4">
           <h2 className="text-4xl font-bold mb-6">Comienza a Explorar</h2>

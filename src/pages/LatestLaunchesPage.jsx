@@ -10,6 +10,9 @@ import LaunchCard from '../components/launches/LaunchCard'; // Importar LaunchCa
 import Loader from '../components/common/Loader';
 import ErrorMessage from '../components/common/ErrorMessage';
 
+// Importar el nuevo componente CrewCarousel
+import CrewCarousel from '../components/home/CrewCarousel'; 
+
 const LatestLaunchesPage = () => {
   const [launches, setLaunches] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -27,8 +30,8 @@ const LatestLaunchesPage = () => {
         const data = await response.json();
         // Ordenar por fecha descendente para los "últimos" lanzamientos
         const sortedData = data.sort((a, b) => new Date(b.date_utc) - new Date(a.date_utc));
-        // Limitar a los 30 lanzamientos más recientes, por ejemplo, para no cargar demasiado
-        setLaunches(sortedData.slice(0, 30)); 
+        // Limitar a los 10 lanzamientos más recientes
+        setLaunches(sortedData.slice(0, 5)); 
       } catch (err) {
         console.error("Error fetching latest launches:", err);
         setError("No se pudieron cargar los últimos lanzamientos. Por favor, intenta de nuevo más tarde.");
@@ -71,20 +74,8 @@ const LatestLaunchesPage = () => {
         </div>
       </section>
 
-      {/* Sección de Galería (Necesitará datos de la API para ser dinámica) */}
-      <section className="py-20 bg-gray-950 text-white">
-        <div className="container mx-auto px-4 text-center">
-          <h2 className="text-4xl font-bold mb-10">Galería de Momentos</h2>
-          <p className="text-gray-300 text-lg mb-8">Imágenes destacadas de los lanzamientos más espectaculares.</p>
-          {/* Por ahora, usaremos placeholders. Más adelante, extraeremos imágenes de 'links.flickr.original' */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            <img src="https://images2.imgbox.com/f9/4f/ozChg5tQ_o.png" alt="Galería" className="w-full h-40 object-cover rounded shadow-md"/>
-            <img src="https://images2.imgbox.com/3c/0e/T8iJcSN3_o.png" alt="Galería" className="w-full h-40 object-cover rounded shadow-md"/>
-            <img src="https://images2.imgbox.com/4e/d8/hOfF6M3y_o.png" alt="Galería" className="w-full h-40 object-cover rounded shadow-md"/>
-            <img src="https://images2.imgbox.com/0b/33/c2x1F7hY_o.png" alt="Galería" className="w-full h-40 object-cover rounded shadow-md"/>
-          </div>
-        </div>
-      </section>
+      {/* Sección del Carrusel de la Tripulación (Reemplaza la Galería de Momentos) */}
+      <CrewCarousel />
 
       {/* Sección de Testimonios (Mantener placeholders o hacerlos dinámicos si se desea) */}
       <section className="py-20 bg-black text-white">

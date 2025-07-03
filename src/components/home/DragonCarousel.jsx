@@ -1,50 +1,26 @@
 import { useEffect, useState, useRef } from 'react';
-import { useKeenSlider } from 'keen-slider/react';
-import 'keen-slider/keen-slider.min.css';
+// Importa Swiper React components
+import { Swiper, SwiperSlide } from 'swiper/react';
+// Importa los estilos de Swiper (core y quizás de algún módulo si lo usas)
+import 'swiper/css';
+import 'swiper/css/pagination'; // Si vas a usar paginación
+import 'swiper/css/navigation'; // Si vas a usar botones de navegación
+
+// Importa módulos necesarios de Swiper (ej. Navigation, Pagination, Autoplay)
+import { Autoplay, Pagination, Navigation } from 'swiper/modules';
+
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 
-const CombinedCarousel = () => {
+const CombinedCarouselSwiper = () => {
   const [items, setItems] = useState([]);
-  const timerRef = useRef(null);
+  const [loading, setLoading] = useState(true); // Nuevo estado para controlar la carga
 
-  const [sliderRef, slider] = useKeenSlider({
-    loop: true,
-    mode: 'snap',
-    slides: {
-      perView: 1, 
-      spacing: 15,
-    },
-    breakpoints: {
-      '(min-width: 768px)': {
-        slides: {
-          perView: 2, 
-          spacing: 25,
-        },
-      },
-      '(min-width: 1024px)': {
-        slides: {
-          perView: 2, 
-          spacing: 30,
-        },
-      },
-    },
-    created(sliderInstance) {
-      timerRef.current = setInterval(() => {
-        sliderInstance.next();
-      }, 4000);
-    },
-  });
-
-  const pauseAutoplay = () => clearInterval(timerRef.current);  // Resume autoplay on mouse leave
-  const resumeAutoplay = () => {
-    clearInterval(timerRef.current);
-    timerRef.current = setInterval(() => {
-      slider.current?.next();
-    }, 4000);
-  };
+  // Swiper te da control total sobre la instancia del slider si la necesitas
+  const swiperRef = useRef(null); 
 
   useEffect(() => {
     const fetchData = async () => {
+      setLoading(true); // Inicia la carga
       try {
         const [dragonsRes, rocketsRes] = await Promise.all([
           fetch('https://api.spacexdata.com/v4/dragons'),
@@ -54,45 +30,42 @@ const CombinedCarousel = () => {
         const dragonsData = await dragonsRes.json();
         const rocketsData = await rocketsRes.json();
 
-
         const formattedDragons = dragonsData.map(dragon => ({
           id: dragon.id,
           name: dragon.name,
           description: dragon.description,
-          image: dragon.flickr_images[0], 
+          image: dragon.flickr_images[0],
           type: 'Dragon',
           link: dragon.wikipedia,
         }));
 
-     
         const formattedRockets = rocketsData.map(rocket => ({
           id: rocket.id,
           name: rocket.name,
           description: rocket.description,
-          image: rocket.flickr_images[0], 
+          image: rocket.flickr_images[0],
           type: 'Rocket',
           link: rocket.wikipedia,
         }));
 
         const combinedItems = [...formattedDragons, ...formattedRockets];
-        combinedItems.sort(() => Math.random() - 0.5); 
+        combinedItems.sort(() => Math.random() - 0.5);
 
         let finalItems = [...combinedItems];
+        // Duplicamos los elementos si es necesario para el loop
         while (finalItems.length < 4 && combinedItems.length > 0) {
-          finalItems.push(...combinedItems);
+            finalItems = [...finalItems, ...combinedItems];
         }
         
         setItems(finalItems);
       } catch (error) {
         console.error('Error fetching data:', error);
+      } finally {
+        setLoading(false); // Finaliza la carga
       }
     };
 
     fetchData();
-
-    return () => {
-      clearInterval(timerRef.current);
-    };
   }, []);
 
   return (
@@ -102,63 +75,96 @@ const CombinedCarousel = () => {
           Explora las Naves y Cohetes de SpaceX
         </h2>
 
-        <div
-          onMouseEnter={pauseAutoplay}
-          onMouseLeave={resumeAutoplay}
-          className="relative max-w-6xl mx-auto"
-        >
-          <div ref={sliderRef} className="keen-slider overflow-hidden rounded-xl shadow-2xl">
-            {items.map((item, index) => (
-              <div
-                key={`${item.id}-${item.type}-${index}`} // Unique key for each item
-                className="keen-slider__slide flex justify-center items-center p-4"
-              >
-                <div className="bg-gray-800 p-6 rounded-xl shadow-lg flex flex-col items-center h-full max-w-sm mx-auto transform transition-all duration-300 hover:scale-105 hover:shadow-blue-500/50">
-                  <img
-                    src={item.image}
-                    alt={item.name}
-                    className="w-full h-64 object-cover rounded-lg border-4 border-blue-600 mb-4 shadow-md"
-                  />
-                  <h3 className="text-2xl font-bold text-blue-300 mb-2">{item.name} ({item.type})</h3>
-                  <p className="text-gray-300 text-sm mt-2 flex-grow overflow-hidden text-ellipsis">
-                    {item.description.length > 150
-                      ? `${item.description.slice(0, 150)}...`
-                      : item.description}
-                  </p>
-                  {item.link && (
-                    <a
-                      href={item.link}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="mt-4 inline-block bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-full transition duration-300"
-                    >
-                      Más información
-                    </a>
-                  )}
-                </div>
-              </div>
-            ))}
-          </div>
-
-          {/* Navigation Buttons */}
-          {slider.current && (
+        <div className="relative max-w-6xl mx-auto">
+          {loading ? (
+            <div className="text-gray-400 text-lg py-10">Cargando naves y cohetes...</div>
+          ) : items.length > 0 ? (
             <>
+              <Swiper
+                // Asigna la ref para control manual si es necesario
+                onSwiper={(swiper) => (swiperRef.current = swiper)}
+                modules={[Autoplay, Pagination, Navigation]}
+                loop={true}
+                spaceBetween={30} // Espacio entre slides
+                centeredSlides={true} // Centra las diapositivas
+                autoplay={{
+                  delay: 4000,
+                  disableOnInteraction: false,
+                }}
+                // Configuración de responsividad (breakpoints)
+                breakpoints={{
+                  // Cuando el ancho de la ventana es >= 0px (móvil)
+                  0: {
+                    slidesPerView: 1,
+                    spaceBetween: 15,
+                  },
+                  // Cuando el ancho de la ventana es >= 768px (tablets)
+                  768: {
+                    slidesPerView: 2,
+                    spaceBetween: 25,
+                  },
+                  // Cuando el ancho de la ventana es >= 1024px (desktops)
+                  1024: {
+                    slidesPerView: 3,
+                    spaceBetween: 30,
+                  },
+                }}
+                navigation={{
+                  nextEl: '.swiper-button-next',
+                  prevEl: '.swiper-button-prev',
+                }}
+                className="mySwiper overflow-hidden rounded-xl shadow-2xl"
+                // Para manejar el pause/resume del autoplay con el mouse
+                onMouseEnter={() => swiperRef.current?.autoplay.stop()}
+                onMouseLeave={() => swiperRef.current?.autoplay.start()}
+              >
+                {items.map((item, index) => (
+                  <SwiperSlide key={`${item.id}-${item.type}-${index}`} className="flex justify-center items-center p-4">
+                    <div className="bg-gray-800 p-6 rounded-xl shadow-lg flex flex-col items-center h-full max-w-sm mx-auto transform transition-all duration-300 hover:scale-105 hover:shadow-blue-500/50">
+                      <img
+                        src={item.image}
+                        alt={item.name}
+                        className="w-full h-64 object-cover rounded-lg border-4 border-blue-600 mb-4 shadow-md"
+                      />
+                      <h3 className="text-2xl font-bold text-blue-300 mb-2">{item.name} ({item.type})</h3>
+                      <p className="text-gray-300 text-sm mt-2 flex-grow overflow-hidden text-ellipsis">
+                        {item.description.length > 150
+                          ? `${item.description.slice(0, 150)}...`
+                          : item.description}
+                      </p>
+                      {item.link && (
+                        <a
+                          href={item.link}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="mt-4 inline-block bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-full transition duration-300"
+                        >
+                          Más información
+                        </a>
+                      )}
+                    </div>
+                  </SwiperSlide>
+                ))}
+              </Swiper>
+
+              {/* Botones de navegación personalizados */}
               <button
-                onClick={() => slider.current?.prev()}
-                className="absolute left-0 top-1/2 -translate-x-1/2 transform -translate-y-1/2 bg-gray-700 bg-opacity-70 hover:bg-opacity-90 p-4 rounded-full shadow-lg transition duration-300 z-20 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="swiper-button-prev absolute left-0 top-1/2 -translate-x-1/2 transform -translate-y-1/2 bg-gray-700 bg-opacity-70 hover:bg-opacity-90 p-4 rounded-full shadow-lg transition duration-300 z-20 focus:outline-none focus:ring-2 focus:ring-blue-500"
                 aria-label="Previous slide"
               >
                 <ChevronLeft className="text-white w-7 h-7" />
               </button>
 
               <button
-                onClick={() => slider.current?.next()}
-                className="absolute right-0 top-1/2 translate-x-1/2 transform -translate-y-1/2 bg-gray-700 bg-opacity-70 hover:bg-opacity-90 p-4 rounded-full shadow-lg transition duration-300 z-20 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="swiper-button-next absolute right-0 top-1/2 translate-x-1/2 transform -translate-y-1/2 bg-gray-700 bg-opacity-70 hover:bg-opacity-90 p-4 rounded-full shadow-lg transition duration-300 z-20 focus:outline-none focus:ring-2 focus:ring-blue-500"
                 aria-label="Next slide"
               >
                 <ChevronRight className="text-white w-7 h-7" />
               </button>
             </>
+          ) : (
+            // Mensaje si no hay items después de cargar (ej. API falló)
+            <div className="text-gray-400 text-lg py-10">No se pudieron cargar los elementos del carrusel.</div>
           )}
         </div>
       </div>
@@ -166,4 +172,4 @@ const CombinedCarousel = () => {
   );
 };
 
-export default CombinedCarousel;
+export default CombinedCarouselSwiper;
